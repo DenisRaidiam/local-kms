@@ -244,6 +244,9 @@ The following environment variables can be set to configure LKMS.
 - **KMS_DATA_PATH**: Path LKMS will put its database.
 	- Docker default: `/data`
 	- Native default: `/tmp/local-kms`
+- **KMS_RSA_SIGN_SALT_LENGTH**: Controls the length of the salt used in the PSS signature. It can either be a positive number of bytes, or one of the special cases:
+  - 0 - **default** - causes the salt in a PSS signature to be as large as possible when signing, and to be auto-detected when verifying.
+  - -1 - causes the salt length to equal the length of the hash used in the signature.
 
 Warning: keys and aliases are stored under their ARN, thus their identity includes both KMS_ACCOUNT_ID and KMS_REGION. Changing these values will make pre-existing data inaccessible.
 

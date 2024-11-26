@@ -6,6 +6,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"os"
 	"path/filepath"
+	"strconv"
 )
 
 var (
@@ -81,6 +82,22 @@ func main() {
 	}
 
 	config.DatabasePath, _ = filepath.Abs(dataPath)
+
+	//-------------------------------
+	// KMS RSA Sign salt length
+
+	saltLength := os.Getenv("KMS_RSA_SIGN_SALT_LENGTH")
+
+	if saltLength == "" {
+		saltLength = "0"
+	}
+
+	atoi, err := strconv.Atoi(saltLength)
+	if err != nil {
+		logger.Fatalf("Invalid RSA sign salt length: %s", saltLength)
+	}
+
+	config.RsaSignSaltLength = atoi
 
 	//-------------------------------
 	// Seed
