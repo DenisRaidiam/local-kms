@@ -8,6 +8,7 @@ import (
 	"encoding/pem"
 	"errors"
 	"fmt"
+	"github.com/nsmithuk/local-kms/src/config"
 )
 
 type RsaPrivateKey rsa.PrivateKey
@@ -146,7 +147,9 @@ func (k *RsaKey) Sign(digest []byte, algorithm SigningAlgorithm) ([]byte, error)
 	switch algorithm {
 	case SigningAlgorithmRsaPssSha256, SigningAlgorithmRsaPssSha384, SigningAlgorithmRsaPssSha512:
 
-		return rsa.SignPSS(rand.Reader, &key, hash, digest, nil)
+		return rsa.SignPSS(rand.Reader, &key, hash, digest, &rsa.PSSOptions{
+			SaltLength: config.RsaSignSaltLength,
+		})
 
 	case SigningAlgorithmRsaPkcsSha256, SigningAlgorithmRsaPkcsSha384, SigningAlgorithmRsaPkcsSha512:
 
@@ -218,9 +221,9 @@ func (k *RsaKey) HashAndVerify(signature []byte, message []byte, algorithm Signi
 	return k.Verify(signature, digest, algorithm)
 }
 
-//----------------------------------------------------
+// ----------------------------------------------------
 // Construct key from YAML (seeding)
-//---
+// ---
 func (k *RsaKey) UnmarshalYAML(unmarshal func(interface{}) error) error {
 
 	// Cannot use embedded 'Key' struct

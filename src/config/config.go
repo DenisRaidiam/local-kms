@@ -5,6 +5,7 @@ import "strings"
 var AWSRegion string
 var AWSAccountId string
 var DatabasePath string
+var RsaSignSaltLength int
 
 func ArnPrefix() string {
 	return "arn:aws:kms:" + AWSRegion + ":" + AWSAccountId + ":"
